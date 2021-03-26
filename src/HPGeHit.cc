@@ -41,8 +41,8 @@ G4ThreadLocal G4Allocator<HPGeHit>* HPGeHitAllocator = 0;
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 HPGeHit::HPGeHit()
- : G4VHit(),
-   fEdep(0.)
+ : G4VHit()
+  // fEdep(0.)
 {}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -54,7 +54,7 @@ HPGeHit::~HPGeHit() {}
 HPGeHit::HPGeHit(const HPGeHit& right)
   : G4VHit()
 {
-  fEdep = right.fEdep;
+ // fEdep = right.fEdep;
 
 }
 
@@ -62,7 +62,7 @@ HPGeHit::HPGeHit(const HPGeHit& right)
 
 const HPGeHit& HPGeHit::operator=(const HPGeHit& right)
 {
-  fEdep = right.fEdep;
+ // fEdep = right.fEdep;
 
   return *this;
 }
@@ -80,7 +80,7 @@ void HPGeHit::Print()
 {
   G4cout
      << "Edep: " 
-     << std::setw(7) << G4BestUnit(fEdep,"Energy")
+     //<< std::setw(7) << G4BestUnit(fEdep,"Energy")
      << G4endl;
 }
 

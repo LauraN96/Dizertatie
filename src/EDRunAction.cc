@@ -60,7 +60,9 @@ EDRunAction::EDRunAction()
   //
   
   // Creating histograms
-  analysisManager->CreateH1("Eabs","Edep in absorber", 20300, 1 *keV, 2900 * keV);
+  analysisManager->CreateH1("Eabs","Edep in absorber", 20300, 1 *keV, 2900 * keV); // 7 bin per keV
+  analysisManager->CreateH2("Position","Edep2Dxy", 4080, -221/2, 221/2,   // binning, xmin, xmax, along x direction in mm
+                                                   128, -6.9/2, 6.9/2);   // binning, ymin, ymax, along y direction in mm
 
   // Creating ntuple
   //

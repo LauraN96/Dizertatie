@@ -41,9 +41,15 @@
 #include "G4SDManager.hh"
 #include "G4VisAttributes.hh"
 #include "G4Material.hh"
-#include "G4Polycone.hh"
-#include "G4Polyhedra.hh"
+//#include "G4Polycone.hh"
+//#include "G4Polyhedra.hh"
 #include "G4Sphere.hh"
+
+#include "G4MultiFunctionalDetector.hh"
+#include "G4VPrimitiveScorer.hh"
+#include "G4PSEnergyDeposit.hh"
+#include "G4PSDoseDeposit.hh"
+
 
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -124,11 +130,11 @@ G4VPhysicalVolume* EDDetectorConstruction::Construct()
 
   //cameraLV-> SetVisAttributes (G4VisAttributes::GetInvisible());
 
-  // Parameters
+  // Element 0
 
-  G4double d0 = 6.9/2* mm ;
-  G4double l0 = 221/2* mm ;
-  G4double h0 = 4/2* mm ;
+  G4double d0 = 6.9/2* mm ;   //y
+  G4double l0 = 221/2* mm ;   //x
+  G4double h0 = 4/2* mm ;     //z
 
   G4VSolid* activePart = new G4Box("ActivePart", l0, d0, h0);
 
@@ -148,6 +154,12 @@ G4VPhysicalVolume* EDDetectorConstruction::Construct()
   G4Colour red(1.,0.,0.);
   G4VisAttributes atribb(red);
   activePartLV->SetVisAttributes(atribb);
+
+  auto  SensitDet
+    = new HPGeSD("TDI", "AbsorberHitsCollection", fNofLayers);
+  G4SDManager::GetSDMpointer()->AddNewDetector(SensitDet);
+  SetSensitiveDetector("ActivePart",SensitDet);
+
 
   //Element 1
 
@@ -227,10 +239,6 @@ G4VPhysicalVolume* EDDetectorConstruction::Construct()
   G4VisAttributes atb_p(purple);
   element3LV->SetVisAttributes(atb_p);
 
-  auto  SensitDet
-    = new HPGeSD("TDI", "AbsorberHitsCollection", fNofLayers);
-  G4SDManager::GetSDMpointer()->AddNewDetector(SensitDet);
-  SetSensitiveDetector("ActivePart",SensitDet);
 
   // Filtru AL
 
@@ -313,7 +321,7 @@ G4VPhysicalVolume* EDDetectorConstruction::Construct()
 
   //Sfera iradiata
 
-  G4VSolid* element7 = new G4Sphere("Element7", 0* mm, 7* mm, 0.0* deg, 360* deg, 0.0* deg, 360.0* deg);
+ /* G4VSolid* element7 = new G4Sphere("Element7", 0* mm, 7* mm, 0.0* deg, 360* deg, 0.0* deg, 360.0* deg);
   G4LogicalVolume* element7LV
     = new G4LogicalVolume(element7, Al, "Element7");
 
@@ -329,13 +337,27 @@ G4VPhysicalVolume* EDDetectorConstruction::Construct()
 
  // G4Colour yellow(0.,1.,1.);
   G4VisAttributes atb_ppppp(yellow);
-  element4LV->SetVisAttributes(atb_ppppp);
+  element4LV->SetVisAttributes(atb_ppppp);*/
 
   return cameraPV;
 
 
 }
 
+/*void EDDetectorConstruction::ConstructSDandField()
+{
+  G4SDManager::GetSDMpointer()->SetVerboseLevel(1);
+
+  // declare ActivPart as a MultiFunctionalDetector scorer
+  //
+  G4MultiFunctionalDetector* activePart = new G4MultiFunctionalDetector("activePart");
+  G4SDManager::GetSDMpointer()->AddNewDetector(activePart);
+  G4VPrimitiveScorer* primitiv = new G4PSEnergyDeposit("edep");
+  activePart->RegisterPrimitive(primitiv);
+  SetSensitiveDetector("ActivePart",activePart);
+
+
+}*/
 
 
 

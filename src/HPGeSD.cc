@@ -88,7 +88,7 @@ G4bool HPGeSD::ProcessHits(G4Step* step,
     // energy deposit
     auto edep = step->GetTotalEnergyDeposit();
 
-    // step length
+ /* // step length
     G4double stepLength = 0.;
     if ( step->GetTrack()->GetDefinition()->GetPDGCharge() != 0. ) {
       stepLength = step->GetStepLength();
@@ -97,9 +97,78 @@ G4bool HPGeSD::ProcessHits(G4Step* step,
     if ( edep==0. && stepLength == 0. ) return false;
 
     auto touchable = (step->GetPreStepPoint()->GetTouchable());
-
+  */
     // Get calorimeter cell id
-    auto layerNumber = touchable->GetReplicaNumber(1);
+
+
+
+
+    G4StepPoint* point1 = step->GetPreStepPoint();
+    G4StepPoint* point2 = step->GetPostStepPoint();
+            G4int incoming = 0;
+    if (point1->GetStepStatus() == fGeomBoundary) {
+            incoming = 1;
+    };
+    G4int outgoing=0;
+    if (point2->GetStepStatus() == fGeomBoundary) {
+                    outgoing = 1;
+            };
+    //G4Track* track = aStep->GetTrack();
+    //G4double kinEnergy = track->GetKineticEnergy();
+
+    //if(edep==0.) return false;
+    G4int trackID = step->GetTrack()->GetTrackID();
+
+    //interaction position (in local coordinates) takes place where the step ends (or continuously along the step...)
+    G4ThreeVector pos1 = step->GetPostStepPoint()->GetPosition();
+    G4TouchableHandle theTouchable1 =
+                                 step->GetPostStepPoint()->GetTouchableHandle();
+            G4ThreeVector localpos1 =
+                                   theTouchable1->GetHistory()->GetTopTransform().TransformPoint(pos1);
+                                 //G4ThreeVector localpos1=pos1;
+
+    //entry position in local coordinates
+    G4ThreeVector pos2= step->GetPreStepPoint()->GetPosition();
+    G4TouchableHandle theTouchable2 =
+                 step->GetPreStepPoint()->GetTouchableHandle();
+    G4ThreeVector localpos2 =
+                           theTouchable2->GetHistory()->GetTopTransform().TransformPoint(pos2);
+    //			     G4ThreeVector localpos2=pos1;
+    //energy at start of step:
+ G4double eInit=point1->GetKineticEnergy();
+    //name of volume taken from prestep, as the poststep can be on the boundary (for transportation). The points on the boundry are put on the 2nd volume. Otherwise the two are the same.
+    G4String name = step->GetPreStepPoint()->GetPhysicalVolume()->GetName();
+//G4cout<<aStep->GetPostStepPoint()->GetPhysicalVolume()->GetName()<<G4endl;
+    G4int copyNr=step->GetPreStepPoint()->GetPhysicalVolume()->GetCopyNo();
+    //name of the particle making the step
+    G4String particleName = step->GetTrack()->GetDefinition()->GetParticleName();
+
+    G4double aTime = step->GetPreStepPoint()->GetGlobalTime();
+    //G4cout<<"time is(ns):"<< aTime/ns<<G4endl;
+
+
+
+
+    HPGeHit* newHit = new HPGeHit();
+    newHit->SetEdep(edep);
+    newHit->SetEinit(eInit);
+    newHit->SetTrackID(trackID);
+    newHit->SetIntPos(localpos1);
+    newHit->SetEntryPos(localpos2);
+    newHit->SetName(name);
+    newHit->SetIncoming(incoming);
+    newHit->SetOutgoing(outgoing);
+    newHit->SetParticle(particleName);
+    newHit->SetCopyNr(copyNr);
+    newHit->SetTime(aTime);
+    //newHit->Print();
+
+    fHitsCollection->insert(newHit);
+
+
+
+
+ /*   auto layerNumber = touchable->GetReplicaNumber(1);
 
     // Get hit accounting data for this cell
     auto hit = (*fHitsCollection)[layerNumber];
@@ -108,15 +177,15 @@ G4bool HPGeSD::ProcessHits(G4Step* step,
       msg << "Cannot access hit " << layerNumber;
       G4Exception("HPGeSD::ProcessHits()",
         "MyCode0004", FatalException, msg);
-    }
+    } */
 
     // Get hit for total accounting
-    auto hitTotal
+   /* auto hitTotal
       = (*fHitsCollection)[fHitsCollection->entries()-1];
 
     // Add values
     hit->SetEdep(edep);
-    hitTotal->SetEdep(edep);
+    hitTotal->SetEdep(edep);*/
 
     return true;
 

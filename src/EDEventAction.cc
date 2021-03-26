@@ -128,6 +128,8 @@ void EDEventAction::EndOfEventAction(const G4Event* event)
     // fill histograms
     analysisManager->FillH1(0, absoHit->GetEdep());
 
+   // analysisManager->FillH2(0, absoHit->GetEdep());
+
     // fill ntuple
     analysisManager->FillNtupleDColumn(0, absoHit->GetEdep());
     analysisManager->AddNtupleRow();
