@@ -60,14 +60,65 @@ class HPGeHit : public G4VHit
     virtual void Draw() {}
     virtual void Print();
 
+
+  /*  void Draw();
+    void Print();*/
+
     // methods to handle data
-    void SetEdep (G4double edep);
+   // void SetEdep (G4double edep);
 
     // get methods
-    G4double GetEdep() const;
+   // G4double GetEdep() const;
 
-  private:
-    G4double fEdep; ///< Energy deposit in the sensitive volume
+  public:
+   // G4double fEdep; ///< Energy deposit in the sensitive volume
+
+
+
+
+    void SetTrackID  (G4int track)      { trackID = track; };
+    void SetEdep     (G4double de)      { edep = de; };
+    void SetEinit     (G4double de)      { eInit = de; };
+    void SetIntPos      (G4ThreeVector xyz){ intPos = xyz; };
+    void SetEntryPos      (G4ThreeVector xyz){ entryPos = xyz; };
+    void SetName     (G4String nume)    {name=nume;};
+    void SetIncoming (G4int isit) {incoming =isit;};
+    void SetOutgoing (G4int isit) {outgoing =isit;};
+    void SetCopyNr (G4int isit) {copyNr =isit;};
+    void SetParticle (G4String nume){particle=nume;};
+    void SetTime (G4double time){hour=time;};
+
+    G4int GetTrackID()    { return trackID; };
+    G4double GetEdep()    { return edep; };
+    G4double GetEinit()    { return eInit; };
+    G4ThreeVector GetIntPos(){ return intPos; };
+    G4ThreeVector GetEntryPos(){ return entryPos; };
+    G4String GetName()    {return name;};
+    G4int GetIncoming(){return incoming;};
+    G4int GetOutgoing(){return outgoing;};
+    G4String GetParticle(){return particle;};
+    G4int GetCopyNo(){return copyNr;};
+    G4double GetTime(){return hour;};
+
+    G4int	detIDHit;
+
+private:
+    G4int         trackID;
+    G4double 	eInit; //the initial energy of the particle;
+    G4double      edep;  //deposited energy during step
+    G4ThreeVector intPos; //interaction position (postStep) in local coordinates
+    G4ThreeVector entryPos;//entry position in local coordinates
+    G4String      name;  //name of the prestep (the detector where the hit takes place)
+    G4int incoming; //set to 1 if the prestep point is on the border.  0 otherwise
+    G4int outgoing; //set to 1 if the poststep point is on the border.  0 otherwise
+    G4String particle; //the name of the partile creating the hit
+    G4int copyNr; //copy number of the physical where the hit takes place
+    G4double hour ; //the time of the hit (time variable used by the system...)
+
+
+
+
+
 };
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -96,14 +147,14 @@ inline void HPGeHit::operator delete(void *hit)
   HPGeHitAllocator->FreeSingle((HPGeHit*) hit);
 }
 
-inline void HPGeHit::SetEdep(G4double edep) {
+/*inline void HPGeHit::SetEdep(G4double edep) {
   fEdep += edep;
 }
 
 inline G4double HPGeHit::GetEdep() const {
   return fEdep;
 }
-
+*/
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 #endif

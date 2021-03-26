@@ -35,6 +35,7 @@
 #include "HPGeSD.hh"
 
 class G4VPhysicalVolume;
+class G4LogicalVolume;
 
 /// Detector construction class to define materials and geometry.
 
@@ -46,10 +47,9 @@ class EDDetectorConstruction : public G4VUserDetectorConstruction
 
   public:
     virtual G4VPhysicalVolume* Construct();
+   // virtual void ConstructSDandField();
+   // virtual void ConstructSD();
 
-
-
-    //virtual void ConstructSD();
 
   private:
 
